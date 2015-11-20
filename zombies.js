@@ -234,12 +234,11 @@ Player.prototype.equip = function(item) {
   if (item instanceof Weapon && pack.indexOf(item) !== -1) {
     if (this.equipped === false) {
       this.equipped = item;
-      pack.splice(pack.indexOf(item), 1);
     } else {
       pack.push(holding);
       this.equipped = item;
-      pack.splice(pack.indexOf(item), 1);
     }
+    pack.splice(pack.indexOf(item), 1);
   } else {
     return false;
   }
@@ -264,7 +263,21 @@ Player.prototype.equip = function(item) {
  * @param {Food} itemToEat  The food item to eat.
  */
 
+Player.prototype.eat = function(item) {
+  var pack = this.getPack();
+  var maxHealth = this.getMaxHealth();
 
+  if (item instanceof Food && pack.indexOf(item) !== -1) {
+    if (this.health + item.energy > maxHealth) {
+      this.health = maxHealth;
+    } else {
+      this.health += item.energy;
+    }
+    pack.splice(pack.indexOf(item), 1);
+  } else {
+    return false;
+  }
+};
 
 /**
  * Player Class Method => useItem(item)
