@@ -27,15 +27,21 @@ function Item(name) {
  * @property {number} damage
  */
 
+function Weapon(name, damage) {
+  this.damage = damage;
+  Item.call(this, name);
+}
 
 /**
  * Weapon Extends Item Class
  * -----------------------------
  */
-function Weapon(name, damage) {
-  this.damage = damage;
-  Item.call(this.name);
-}
+
+Weapon.prototype = Object.create(Item.prototype, {
+  constructor: {
+    value: Item
+  }
+});
 
 
 /**
@@ -54,12 +60,20 @@ function Weapon(name, damage) {
  * @property {number} energy
  */
 
+function Food(name, energy) {
+  this.energy = energy;
+  Item.call(this, name);
+}
 
 /**
  * Food Extends Item Class
  * -----------------------------
  */
-
+Food.prototype = Object.create(Item.prototype, {
+  constructor: {
+    value: Item
+  }
+});
 
 
 /**
@@ -113,6 +127,15 @@ function Player(name, health, strength, speed) {
  * @name checkPack
  */
 
+Player.prototype.checkPack = function() {
+  var thePack = this.getPack();
+  var msg = "The pack contains ";
+  for (var i=0; i<thePack.length; i++) {
+    msg += thePack[i] + " and ";
+  }
+  console.log(msg);
+  // return msg;
+};
 
 /**
  * Player Class Method => takeItem(item)
@@ -132,6 +155,18 @@ function Player(name, health, strength, speed) {
  * @return {boolean} true/false     Whether player was able to store item in pack.
  */
 
+Player.prototype.takeItem = function(item) {
+  var thePack = this.getPack();
+  if (thePack.length >= 3) {
+    console.log("The pack is full and so the item could not be stored.");
+    return false;
+  } else {
+    thePack.push(item);
+    console.log(this.name + " successfully added " + item.name + " to the inventory.");
+    return true;
+  }
+
+};
 
 /**
  * Player Class Method => discardItem(item)
@@ -159,6 +194,9 @@ function Player(name, health, strength, speed) {
  * @return {boolean} true/false     Whether player was able to remove item from pack.
  */
 
+Player.prototype.discardItem = function(item) {
+
+};
 
 /**
  * Player Class Method => equip(itemToEquip)
@@ -250,7 +288,7 @@ function Zombie(health, strength, speed) {
   this.health = health;
   this.strength = strength;
   this.speed = speed;
-  this.isAlive = true;
+  this.isAlive = true; // Disagree
 }
 
 /**
