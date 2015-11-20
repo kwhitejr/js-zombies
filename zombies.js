@@ -133,8 +133,8 @@ Player.prototype.checkPack = function() {
   for (var i=0; i<thePack.length; i++) {
     msg += thePack[i] + " and ";
   }
+  msg += "and nothing else.";
   console.log(msg);
-  // return msg;
 };
 
 /**
@@ -156,16 +156,14 @@ Player.prototype.checkPack = function() {
  */
 
 Player.prototype.takeItem = function(item) {
-  var thePack = this.getPack();
-  if (thePack.length >= 3) {
+  var pack = this.getPack();
+  if (pack.length > 2) {
     console.log("The pack is full and so the item could not be stored.");
     return false;
-  } else {
-    thePack.push(item);
-    console.log(this.name + " successfully added " + item.name + " to the inventory.");
-    return true;
   }
-
+  pack.push(item);
+  console.log(this.name + " successfully added " + item.name + " to the inventory.");
+  return true;
 };
 
 /**
@@ -195,12 +193,13 @@ Player.prototype.takeItem = function(item) {
  */
 
 Player.prototype.discardItem = function(item) {
-  var arr = this.getPack();
-  if (!arr.indexOf(item)) {
+  var pack = this.getPack();
+
+  if (!pack.indexOf(item)) {
     console.log("Can't toss the " + item.name + " that you don't have, silly pants.");
     return false;
   } else {
-    arr.splice(arr.indexOf(item), 1);
+    pack.splice(pack.indexOf(item), 1);
     console.log(this.name + " discarded the very precious " + item.name);
     return true;
   }
@@ -292,6 +291,19 @@ Player.prototype.eat = function(item) {
  * @param {Item/Weapon/Food} item   The item to use.
  */
 
+Player.prototype.useItem = function(item) {
+  //potential bug in test?
+  var pack = this.getPack();
+
+  if (pack.indexOf(item) !== -1) {
+    if (item instanceof Weapon) {
+      this.equip(item);
+    }
+    if (item instanceof Food) {
+      this.eat(item);
+    }
+  }
+};
 
 /**
  * Player Class Method => equippedWith()
@@ -307,6 +319,16 @@ Player.prototype.eat = function(item) {
  * @return {string/boolean}   Weapon name or false if nothing is equipped.
  */
 
+Player.prototype.equippedWith = function() {
+  console.log("Your name is " + this.name);
+
+  if (this.equipped === false || undefined) {
+    console.log("No weapon is equipped.");
+    return false;
+  }
+  console.log("You are equipped with a menacing " + this.equipped.name);
+  return this.equipped.name;
+};
 
 /**
  * Class => Zombie(health, strength, speed)
@@ -352,7 +374,16 @@ function Zombie(health, strength, speed) {
  * -----------------------------
  */
 
+function FastZombie(health, strength, speed) {
+  Zombie.call(this, health, strength, speed);
+}
 
+
+FastZombie.prototype = Object.create(Zombie.prototype, {
+  constructor: {
+    value: Zombie
+  }
+});
 
 /**
  * Class => StrongZombie(health, strength, speed)
@@ -375,6 +406,15 @@ function Zombie(health, strength, speed) {
  * -----------------------------
  */
 
+function StrongZombie(health, strength, speed) {
+  Zombie.call(this, health, strength, speed);
+}
+
+StrongZombie.prototype = Object.create(Zombie.prototype, {
+  constructor: {
+    value: Zombie
+  }
+});
 
 
 /**
@@ -394,10 +434,20 @@ function Zombie(health, strength, speed) {
 
 
 /**
- * StrongZombie Extends Zombie Class
+ * RangedZombie Extends Zombie Class
  * -----------------------------
  */
 
+function RangedZombie(health, strength, speed) {
+  Zombie.call(this, health, strength, speed);
+}
+
+
+RangedZombie.prototype = Object.create(Zombie.prototype, {
+  constructor: {
+    value: Zombie
+  }
+});
 
 
 /**
@@ -421,6 +471,16 @@ function Zombie(health, strength, speed) {
  * -----------------------------
  */
 
+function ExplodingZombie(health, strength, speed) {
+  Zombie.call(this, health, strength, speed);
+}
+
+
+ExplodingZombie.prototype = Object.create(Zombie.prototype, {
+  constructor: {
+    value: Zombie
+  }
+});
 
 
 
