@@ -226,6 +226,24 @@ Player.prototype.discardItem = function(item) {
  * @param {Weapon} itemToEquip  The weapon item to equip.
  */
 
+Player.prototype.equip = function(item) {
+  // test whether the item is a weapon
+  var pack = this.getPack();
+  var holding = this.equipped;
+
+  if (item instanceof Weapon && pack.indexOf(item) !== -1) {
+    if (this.equipped === false) {
+      this.equipped = item;
+      pack.splice(pack.indexOf(item), 1);
+    } else {
+      pack.push(holding);
+      this.equipped = item;
+      pack.splice(pack.indexOf(item), 1);
+    }
+  } else {
+    return false;
+  }
+};
 
 /**
  * Player Class Method => eat(itemToEat)
@@ -245,6 +263,7 @@ Player.prototype.discardItem = function(item) {
  * @name eat
  * @param {Food} itemToEat  The food item to eat.
  */
+
 
 
 /**
