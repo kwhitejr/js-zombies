@@ -131,7 +131,7 @@ Player.prototype.checkPack = function() {
   var thePack = this.getPack();
   var msg = "The pack contains ";
   for (var i=0; i<thePack.length; i++) {
-    msg += thePack[i] + " and ";
+    msg += thePack[i].name + " and ";
   }
   msg += "and nothing else.";
   console.log(msg);
@@ -195,7 +195,7 @@ Player.prototype.takeItem = function(item) {
 Player.prototype.discardItem = function(item) {
   var pack = this.getPack();
 
-  if (!pack.indexOf(item)) {
+  if (pack.indexOf(item) === -1) {
     console.log("Can't toss the " + item.name + " that you don't have, silly pants.");
     return false;
   } else {
@@ -292,7 +292,6 @@ Player.prototype.eat = function(item) {
  */
 
 Player.prototype.useItem = function(item) {
-  //potential bug in test?
   var pack = this.getPack();
 
   if (pack.indexOf(item) !== -1) {
@@ -303,6 +302,7 @@ Player.prototype.useItem = function(item) {
       this.eat(item);
     }
   }
+  return false;
 };
 
 /**
@@ -322,13 +322,24 @@ Player.prototype.useItem = function(item) {
 Player.prototype.equippedWith = function() {
   console.log("Your name is " + this.name);
 
-  if (this.equipped === false || undefined) {
+  if (!(this.equipped)) {
     console.log("No weapon is equipped.");
     return false;
   }
   console.log("You are equipped with a menacing " + this.equipped.name);
   return this.equipped.name;
 };
+
+Player.prototype.attack = function(zombie) {
+  console.log(this.name + " lashes wildly at the " + zombie.name + " with his/her " + this.equipped.name);
+  zombie.health -= this.equipped.damage;
+  console.log("You strike " + zombie.name + " for " + this.equipped.damage + " damage.");
+  this.health -= zombie.strength;
+  console.log("Your face took " + zombie.strength + " damage.");
+  console.log("You ridiculous bravado has drawn the attention of other zombies.");
+  console.log("Your health is now " + this.health);
+};
+
 
 /**
  * Class => Zombie(health, strength, speed)
@@ -489,38 +500,42 @@ ExplodingZombie.prototype = Object.create(Zombie.prototype, {
  * Feel free to edit this and check your game logic.
  */
 function runGame() {
-  // var player = new Player("Joan", 500, 30, 70);
-  // var zombie = new Zombie(40, 50, 20);
-  // var charger = new FastZombie(175, 25, 60);
-  // var tank = new StrongZombie(250, 100, 15);
-  // var spitter = new RangedZombie(150, 20, 20);
-  // var boomer = new ExplodingZombie(50, 15, 10);
+  var player = new Player("Joan", 500, 30, 70);
+  var zombie = new Zombie(40, 50, 20);
+  var charger = new FastZombie(175, 25, 60);
+  var tank = new StrongZombie(250, 100, 15);
+  var spitter = new RangedZombie(150, 20, 20);
+  var boomer = new ExplodingZombie(50, 15, 10);
 
-  // var shovel = new Weapon("shovel", 15);
-  // var sandwich = new Food("sandwich", 30);
-  // var chainsaw = new Weapon("chainsaw", 25);
+  var shovel = new Weapon("shovel", 15);
+  var sandwich = new Food("sandwich", 30);
+  var chainsaw = new Weapon("chainsaw", 25);
+  var zombieCorpse = new Food("zombie corpse", 75);
+  var zombieTeeth = new Weapon("zombie teeth", 75);
 
-  // player.takeItem(shovel);
-  // player.takeItem(sandwich);
-  // player.takeItem(chainsaw);
-  // player.discardItem(new Weapon("scythe", 21));
-  // player.discardItem(shovel);
-  // player.checkPack();
-  // player.takeItem(shovel);
-  // player.checkPack();
+  player.takeItem(shovel);
+  player.takeItem(sandwich);
+  player.takeItem(chainsaw);
+  player.discardItem(new Weapon("scythe", 21));
+  player.discardItem(shovel);
+  player.checkPack();
+  player.takeItem(shovel);
+  player.equip(shovel);
+  player.attack(spitter);
+  player.checkPack();
 
-  // player.equippedWith();
-  // player.useItem(chainsaw);
-  // player.equippedWith();
-  // player.checkPack();
+  player.equippedWith();
+  player.useItem(chainsaw);
+  player.equippedWith();
+  player.checkPack();
 
-  // player.useItem(shovel);
-  // player.equippedWith();
-  // player.checkPack();
+  player.useItem(shovel);
+  player.equippedWith();
+  player.checkPack();
 
-  // player.health = 487;
-  // console.log("Before health: " + player.health);
-  // player.useItem(sandwich);
-  // console.log("After health: " + player.health);
-  // player.checkPack();
+  player.health = 487;
+  console.log("Before health: " + player.health);
+  player.useItem(sandwich);
+  console.log("After health: " + player.health);
+  player.checkPack();
 }
