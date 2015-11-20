@@ -195,7 +195,15 @@ Player.prototype.takeItem = function(item) {
  */
 
 Player.prototype.discardItem = function(item) {
-
+  var arr = this.getPack();
+  if (!arr.indexOf(item)) {
+    console.log("Can't toss the " + item.name + " that you don't have, silly pants.");
+    return false;
+  } else {
+    arr.splice(arr.indexOf(item), 1);
+    console.log(this.name + " discarded the very precious " + item.name);
+    return true;
+  }
 };
 
 /**
